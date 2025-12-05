@@ -8,7 +8,21 @@
 
 <script>
 
-
+function validateUserName(username) {
+    return new Promise(function(resolve, reject) {
+        if(!username.trim()) {
+            reject("User name cannot be blank.");
+            return;
+        }
+        var regex = /^[a-zA-Z]+$/;
+        if(!regex.test(username)) {
+            reject("User name can only contain alpha characters.");
+            return;
+        }
+        resolve(username);
+    });
+}
+    
 // Start game
 async function startGame() {
     var username = document.userForm.elements[0].value.trim();
