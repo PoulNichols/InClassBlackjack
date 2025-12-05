@@ -92,7 +92,35 @@ function shuffleDeck() {
     dealInitialCards(); // deal cards after shuffle
     alert("Deck shuffled and new cards dealt!");
 }
-    
+
+// Deal 2 dealer (one face down) and 2 player
+function dealInitialCards() {
+    var dealerCardsHTML = "";
+    var playerCardsHTML = "";
+
+    // Dealer first card face up
+    deck[0].dealt = true;
+    deck[0].isVisible = true;
+    dealerCardsHTML += deck[0].show();
+
+    // Dealer second card face down
+    deck[1].dealt = true;
+    deck[1].isVisible = false;
+    dealerCardsHTML += deck[1].show();
+
+    document.getElementById("dealerCards").innerHTML = dealerCardsHTML;
+
+    // Player first 2 cards face up
+    for (var i = 2; i < 4; i++) {
+        deck[i].dealt = true;
+        deck[i].isVisible = true;
+        playerCardsHTML += deck[i].show();
+    }
+    document.getElementById("playerCards").innerHTML = playerCardsHTML;
+}
+
+
+
 // Start game
 async function startGame() {
     var username = document.userForm.elements[0].value.trim();
@@ -110,6 +138,48 @@ async function startGame() {
     }
 }
 
+// Stand: reveal dealer's hidden card
+function stand() {
+    // Reveal dealer's second card
+    deck[1].isVisible = true;
+
+    var dealerHTML = "";
+    for (var i = 0; i < deck.length; i++) {
+        if (deck[i].dealt && i < 2) { // only first 2 dealer cards
+            dealerHTML += deck[i].show();
+        }
+    }
+    document.getElementById("dealerCards").innerHTML = dealerHTML;
+
+    alert("Dealer's hidden card revealed! Dealer's turn can be implemented next.");
+}
+
+// Hit: draw next card for player
+function hit() {
+    var nextCard = null;
+    for (var i = 0; i < deck.length; i++) {
+        if (!deck[i].dealt) {
+            nextCard = deck[i];
+            deck[i].dealt = true;
+            deck[i].isVisible = true;
+            break;
+        }
+    }
+
+    if (!nextCard) {
+        alert("No more cards in the deck!");
+        return;
+    }
+
+    var existing = document.getElementById("playerCards").innerHTML;
+    document.getElementById("playerCards").innerHTML = existing + nextCard.show();
+}
+
+// Return to form
+function returnToForm() {
+    document.getElementById('userForm').style.display = 'block';
+    document.getElementById('gameArea').style.display = 'none';
+}
 
 </script>
 </head>
